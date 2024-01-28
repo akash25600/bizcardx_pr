@@ -21,14 +21,14 @@ To get started with BizCardX Data Extraction, follow the steps below:
 Install the required libraries using the pip install command. Streamlit, Postgreaql, pandas, easyocr.
 
 pip install [Name of the library]
-Execute the “BizCardx.py” using the streamlit run command.
+Execute the “Biz-Cardx.py” using the streamlit run command.
 
-streamlit run BizCardX.py
+streamlit run Biz-CardX.py
 A webpage is displayed in browser, I have created the app with three menu options namely HOME, UPLOAD & EXTRACT, MODIFY where user has the option to upload the respective Business Card whose information has to be extracted, stored, modified or deleted if needed.
 
 Once user uploads a business card, the text present in the card is extracted by easyocr library.
 
-The extracted text is sent to get_data() function(user defined- I have coded this function) for respective text classification as company name, card holder name, designation, mobile number, email address, website URL, area, city, state, and pin code using loops and some regular expression.
+The extracted text is get respective text classification as company name, card holder name, designation, mobile number, email address, website URL, area, city, state, and pin code using loops and some regular expression.
 
 The classified data is displayed on screen which can be further edited by user based on requirement.
 
