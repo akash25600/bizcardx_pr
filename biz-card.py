@@ -9,6 +9,10 @@ from streamlit_option_menu import option_menu
 import sqlite3
 from sqlalchemy import create_engine
 
+conn = sqlite3.connect('bizcardx.db')
+cursor= conn.cursor()
+
+
 
 def image_to_text(path):
 
@@ -65,14 +69,17 @@ def extracted_text(texts):
 
 st.set_page_config(layout= "wide")
 
-st.title("EXTRACTING BUSINESS CARD DATA WITH 'OCR'")
+st.title(":blue[EXTRACTING BUSINESS CARD DATA WITH] :green['OCR']")
 st.write("")
 
 
 with st.sidebar:
-  select= option_menu("Akash Menu",["Home", "Upload & Modifying", "Delete"])
+  select= option_menu("Akash_Menu",["Home", "Upload & Modifying", "Delete"])
 
 if select == "Home":
+  image1= Image.open("/content/download (5).jpg")
+  st.image(image1)
+
   st.markdown("### :green[**Technologies Used :**] Python,easy OCR, Streamlit, SQL, Pandas")
 
 
@@ -120,7 +127,7 @@ elif select == "Upload & Modifying":
     st.image(input_img, width = 350)
     st.dataframe(concat_df)
 
-  
+
   if method == "Modify":
     col1,col2= st.columns(2)
 
@@ -163,14 +170,14 @@ elif select == "Upload & Modifying":
     col1,col2= st.columns(2)
     with col1:
       button3= st.button("Save",use_container_width= True)
-
     if button3:
-        conn = sqlite3.connect('bizcardx.db')
+
 
         table_name = 'bizcard_details'
         columns = concat_df.columns.tolist()
 
         # Define the table creation query
+
         create_table_query = '''
         CREATE TABLE IF NOT EXISTS {} (
             NAME varchar(225),
@@ -187,7 +194,7 @@ elif select == "Upload & Modifying":
         conn.execute(create_table_query)
         conn.commit()
 
-               
+
         for index, row in concat_df.iterrows():
             insert_query = '''
                     INSERT INTO {} ({})
@@ -202,64 +209,66 @@ elif select == "Upload & Modifying":
             # Commit the changes
             conn.commit()
 
-            query = 'SELECT * FROM {}'.format(table_name)
 
-            df_from_sqlite = pd.read_sql_query(query, conn)
 
-            st.dataframe(df_from_sqlite)
 
-            if st.dataframe:
+        query = 'SELECT * FROM {}'.format(table_name)
+
+        df_from_sqlite = pd.read_sql_query(query, conn)
+
+        st.dataframe(df_from_sqlite)
+
+        if st.dataframe:
               st.success("Saved Successfully")
 
 if select == "Delete":
 
-  conn = sqlite3.connect('bizcardx.db')
-  cursor= conn.cursor()
 
   col1,col2= st.columns(2)
   with col1:
-    cursor.execute("SELECT NAME FROM bizcard_details")
-    conn.commit()
-    table1= cursor.fetchall()
+      cursor.execute("SELECT NAME FROM bizcard_details")
+      conn.commit()
+      table1= cursor.fetchall()
 
-    names=[]
+      names=[]
 
-    for i in table1:
-      names.append(i[0])
+      for i in table1:
+        names.append(i[0])
 
-    name_select= st.selectbox("Select the Name",options= names)
-  
+      name_select= st.selectbox("Select the Name",options= names)
+
   with col2:
-    cursor.execute(f"SELECT DESIGNATION FROM bizcard_details WHERE NAME ='{name_select}'")
-    conn.commit()
-    table2= cursor.fetchall()
+      cursor.execute(f"SELECT DESIGNATION FROM bizcard_details WHERE NAME ='{name_select}'")
+      conn.commit()
+      table2= cursor.fetchall()
 
-    designations= []
+      designations= []
 
-    for j in table2:
-      designations.append(j[0])
+      for j in table2:
+        designations.append(j[0])
 
-    designation_select= st.selectbox("Select the Designation", options= designations)
+      designation_select= st.selectbox("Select the Designation", options= designations)
 
   if name_select and designation_select:
-    col1,col2,col3= st.columns(3)
+      col1,col2,col3= st.columns(3)
 
-    with col1:
-      st.write(f"Selected Name : {name_select}")
-      st.write("")
-      st.write("")
+      with col1:
+        st.write(f"Selected Name : {name_select}")
+        st.write("")
+        st.write("")
 
-      st.write(f"Selected Designation : {designation_select}")
+        st.write(f"Selected Designation : {designation_select}")
 
-    with col2:
-      st.write("")
-      st.write("")
-      st.write("")
-      st.write("")
-      remove= st.button("Delete",use_container_width= True)
+      with col2:
+        st.write("")
+        st.write("")
+        st.write("")
+        st.write("")
+        remove= st.button("Delete",use_container_width= True)
 
-      if remove:
-        conn.execute(f"DELETE FROM bizcard_details WHERE NAME ='{name_select}' AND DESIGNATION = '{designation_select}'")
-        conn.commit()
+        if remove:
+          conn.execute(f"DELETE FROM bizcard_details WHERE NAME ='{name_select}' AND DESIGNATION = '{designation_select}'")
+          conn.commit()
 
-        st.warning("DELETED")
+          st.warning("DELETED")
+
